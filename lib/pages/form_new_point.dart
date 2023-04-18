@@ -21,7 +21,6 @@ class FormNewPointState extends State<FormNewPoint> {
   final inclusaoController = TextEditingController();
   final diferenciaisController = TextEditingController();
   final _dateFormat = DateFormat('dd/MM/yyyy');
-  final _dao = PontoTuristicoDao();
 
   @override
   void initState() {
