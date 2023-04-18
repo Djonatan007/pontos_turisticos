@@ -58,7 +58,7 @@ class _DetalhePontoState extends State<DetalhePonto> {
           ),
           Row(
             children: [
-              Campo(descricao: 'Data de Inclusão: '),
+              Campo(descricao: 'Inclusão: '),
               Valor(valor: '${widget.pontoTuristico.dataInclusaoFormatado}')
             ],
           )
