@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import '../dao/pontoTuristico_dao.dart';
 import '../model/pontosTuristicos.dart';
 
 class FormNewPoint extends StatefulWidget {
@@ -15,74 +16,87 @@ class FormNewPoint extends StatefulWidget {
 
 class FormNewPointState extends State<FormNewPoint> {
   final formKey = GlobalKey<FormState>();
+  final nomeController = TextEditingController();
   final descricaoController = TextEditingController();
   final inclusaoController = TextEditingController();
   final diferenciaisController = TextEditingController();
   final _dateFormat = DateFormat('dd/MM/yyyy');
-  bool podeEditar = false;
+  final _dao = PontoTuristicoDao();
 
   @override
   void initState() {
     super.initState();
 
     if (widget.pontoTuristico != null) {
+      nomeController.text = widget.pontoTuristico!.nome;
       descricaoController.text = widget.pontoTuristico!.descricao;
       inclusaoController.text = widget.pontoTuristico!.dataInclusaoFormatado;
       diferenciaisController.text = widget.pontoTuristico!.diferencial!;
-      podeEditar = true;
     } else {
       inclusaoController.text = _dateFormat.format(DateTime.now());
     }
   }
 
+
   Widget build(BuildContext context){
     return Form(
         key: formKey,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextFormField(
-              controller: descricaoController,
-              decoration: InputDecoration(labelText: 'Descrição'),
-              validator: (String? valor) {
-                if (valor == null || valor.isEmpty) {
-                  return 'Informe a descrição';
-                }
-                return null;
-              },
-            ),
-            TextFormField(
-              controller: diferenciaisController,
-              decoration: InputDecoration(labelText: 'Diferenciais'),
-            ),
-            TextFormField(
-              controller: inclusaoController,
-              decoration: InputDecoration(
-                labelText: 'Data de Inclusão',
-                prefixIcon: IconButton(
-                  onPressed: () => {},
-                  icon: Icon(Icons.calendar_today),
-                )
+        child:
+        SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextFormField(
+                controller: nomeController,
+                decoration: const InputDecoration(labelText: 'Nome'),
+                validator: (String? valor) {
+                  if (valor == null || valor.isEmpty) {
+                    return 'Informe o Nome';
+                  }
+                  return null;
+                },
               ),
-              validator: (String? valor) {
-                if (valor == null || valor.isEmpty) {
-                  return 'Data de inclusão não pode ser vazia';
-                }
-                return null;
-              },
-              readOnly: true,
-            ),
-          ],
-        ),
+              TextFormField(
+                controller: descricaoController,
+                decoration: const InputDecoration(labelText: 'Descrição'),
+                validator: (String? valor) {
+                  if (valor == null || valor.isEmpty) {
+                    return 'Informe a descrição';
+                  }
+                  return null;
+                },
+              ),
+              TextFormField(
+                controller: diferenciaisController,
+                decoration: const InputDecoration(labelText: 'Diferenciais'),
+                validator: (String? valor) {
+                  if (valor == null || valor.isEmpty) {
+                    return 'Informe os disferenciais';
+                  }
+                  return null;
+                },
+              ),
+              Divider(color: Colors.white,),
+              Row(
+                children: [
+                  Icon(Icons.calendar_today),
+                  Text("Inclusão: ${inclusaoController.text.isEmpty ? _dateFormat.format(DateTime.now()) : inclusaoController.text}")
+                ],
+              ),
+            ],
+          ),
+        )
+
     );
   }
 
   bool dadosValidados() => formKey.currentState?.validate() == true;
 
-  PontoTuristico get newPoint => PontoTuristico(
-      id: widget.pontoTuristico?.id ?? 0,
-      descricao: descricaoController.text,
-      inclusao: _dateFormat.parse(inclusaoController.text),
-      diferencial: diferenciaisController.text
+  PontoTuristico get newPoint =>  PontoTuristico(
+        id: widget.pontoTuristico?.id,
+        nome: nomeController.text,
+        descricao: descricaoController.text,
+        inclusao: _dateFormat.parse(inclusaoController.text),
+        diferencial: diferenciaisController.text
   );
 }
