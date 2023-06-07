@@ -8,6 +8,8 @@ class PontoTuristico {
   static const CAMPO_DATA_INCLUSAO = 'inclusão';
   static const CAMPO_FINALIZADO = 'finalizado';
   static const NAME_TABLE = 'pontos';
+  static const CAMPO_LATITUDE = 'latitude';
+  static const CAMPO_LONGITUDE = 'longitude';
 
   int? id;
   String nome;
@@ -15,8 +17,11 @@ class PontoTuristico {
   String? diferencial;
   DateTime inclusao;
   bool finalizado;
+  String latitude;
+  String longitude;
 
-  PontoTuristico( { this.id, required this.nome, required this.descricao, required this.inclusao, this.diferencial,this.finalizado =false});
+  PontoTuristico( { this.id, required this.nome, required this.descricao, required this.inclusao, this.diferencial,this.finalizado =false, required this.latitude,
+    required this.longitude});
 
   String get dataInclusaoFormatado{
     if (inclusao == null) {
@@ -32,7 +37,9 @@ class PontoTuristico {
     CAMPO_DESCRICAO: descricao,
     CAMPO_DIFERENCIAIS: diferencial,
     CAMPO_DATA_INCLUSAO: inclusao == null ? null : DateFormat("yyyy-MM-dd").format(inclusao!),
-    CAMPO_FINALIZADO: finalizado
+    CAMPO_FINALIZADO: finalizado,
+    CAMPO_LATITUDE: latitude,
+    CAMPO_LONGITUDE: longitude
   };
 
   factory PontoTuristico.fromMap(Map<String, dynamic> map) => PontoTuristico(
@@ -41,7 +48,9 @@ class PontoTuristico {
       descricao: map[CAMPO_DESCRICAO] is String ? map[CAMPO_DESCRICAO] : '',
       diferencial: map[CAMPO_DIFERENCIAIS] is String ? map[CAMPO_DIFERENCIAIS] : '',
       inclusao: map[CAMPO_DATA_INCLUSAO] is DateTime ? DateFormat("yyyy-MM-dd").parse(map[CAMPO_DATA_INCLUSAO]) : DateTime.now(),
-      finalizado: map[CAMPO_FINALIZADO] is bool ? map[CAMPO_FINALIZADO] : false
+      finalizado: map[CAMPO_FINALIZADO] is bool ? map[CAMPO_FINALIZADO] : false,
+      latitude: map[CAMPO_LATITUDE] is String ? map[CAMPO_LATITUDE] : '',
+      longitude: map[CAMPO_LONGITUDE] is String ? map[CAMPO_LONGITUDE] : ''
   );
 
 }

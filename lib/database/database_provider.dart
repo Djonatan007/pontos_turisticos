@@ -37,7 +37,9 @@ class DataBaseProvider{
     ${PontoTuristico.CAMPO_DESCRICAO} TEXT NOT NULL,
     ${PontoTuristico.CAMPO_DIFERENCIAIS} TEXT,
     ${PontoTuristico.CAMPO_DATA_INCLUSAO} TEXT,
-    ${PontoTuristico.CAMPO_FINALIZADO} INTEGER NOT NULL DEFAULT 0
+    ${PontoTuristico.CAMPO_FINALIZADO} INTEGER NOT NULL DEFAULT 0,
+    ${PontoTuristico.CAMPO_LATITUDE} TEXT,
+    ${PontoTuristico.CAMPO_LONGITUDE} TEXT
     )
     '''
     );

@@ -96,6 +96,8 @@ class FormNewPointState extends State<FormNewPoint> {
         nome: nomeController.text,
         descricao: descricaoController.text,
         inclusao: _dateFormat.parse(inclusaoController.text),
-        diferencial: diferenciaisController.text
+        diferencial: diferenciaisController.text,
+        latitude: '',
+        longitude: ''
   );
 }
