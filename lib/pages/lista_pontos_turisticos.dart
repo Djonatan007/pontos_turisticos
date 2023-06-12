@@ -65,10 +65,21 @@ class _ListaPontosTuristicos extends State<ListaPontosTuristicos> {
     return Scaffold(
       appBar: _criarAppBar(),
       body: _criarBody(),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _abrirForm,
-        tooltip: 'Novo Ponto',
-        child: Icon(Icons.add),
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          FloatingActionButton.extended(
+            onPressed: _abrirForm,
+            label: Text('Novo Ponto'),
+            icon: Icon(Icons.add)
+          ),
+          SizedBox(height: 16.0),
+          FloatingActionButton.extended(
+            onPressed: () => {},
+            label: Text('Buscar Cep'),
+            icon: Icon(Icons.search)
+          ),
+        ],
       ),
     );
   }
