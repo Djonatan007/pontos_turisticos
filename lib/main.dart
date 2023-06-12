@@ -16,7 +16,7 @@ class AppGerenciadorPontosTuristicos extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
 
-        primarySwatch: Colors.teal,
+        primarySwatch: Colors.purple,
       ),
       home: ListaPontosTuristicos(),
       routes: {

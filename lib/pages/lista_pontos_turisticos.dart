@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:pontos_turisticos/dao/pontoTuristico_dao.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../model/pontosTuristicos.dart';
@@ -18,6 +19,7 @@ class _ListaPontosTuristicos extends State<ListaPontosTuristicos> {
   static const ACAO_EDITAR = 'editar';
   static const ACAO_EXCLUIR = 'excluir';
   static const ACAO_VISUALIZAR = 'visualizar';
+  Position? _localizacaoAtual;
 
   final _pontosTuristicos = <PontoTuristico>[];
 
@@ -46,7 +48,8 @@ class _ListaPontosTuristicos extends State<ListaPontosTuristicos> {
         filtroDescricao: filtroDescricao,
         campoOrdenacao: campoOrdenacao,
         usarOrdemDecrescente: usarOrdemDecrescente,
-        filtroDiferenciais: filtroDiferencial
+        filtroDiferenciais: filtroDiferencial,
+
     );
     setState(() {
       _pontosTuristicos.clear();
@@ -79,6 +82,10 @@ class _ListaPontosTuristicos extends State<ListaPontosTuristicos> {
             title: Text(pontoTuristico == null ? 'Novo Ponto' : 'Alterar o Ponto: ${pontoTuristico.id}'),
             content: FormNewPoint(key: key, pontoTuristico: pontoTuristico),
             actions: [
+                TextButton(
+                    onPressed: _obterLocalizacaoAtual,
+                    child: Text('Obter localização')
+                ),
               TextButton(
                   onPressed: () => Navigator.of(context).pop(),
                   child: readOnly == true ? Text('Voltar') : Text('Cancelar')
@@ -90,6 +97,9 @@ class _ListaPontosTuristicos extends State<ListaPontosTuristicos> {
                         Navigator.of(context).pop();
 
                         final novoPonto = key.currentState!.newPoint;
+                        novoPonto.longitude = _localizacaoAtual!.longitude.toString();
+                        novoPonto.latitude =  _localizacaoAtual!.latitude.toString();
+
                         _dao.salvar(novoPonto).then((sucess){
                           if (sucess){
                             _popularDados();
@@ -98,7 +108,7 @@ class _ListaPontosTuristicos extends State<ListaPontosTuristicos> {
                       }
                     },
                     child: Text('Salvar')
-                )
+                ),
             ],
           );
         }
@@ -218,6 +228,8 @@ class _ListaPontosTuristicos extends State<ListaPontosTuristicos> {
               children: [
                 Text('Data de Inclusão - ${pontoAtual.dataInclusaoFormatado}'),
                 Text('Diferenciais - ${pontoAtual.diferencial}'),
+                Text('Latitude - ${pontoAtual.latitude}'),
+                Text('Longitude - ${pontoAtual.longitude}'),
               ],
             )
           ),
@@ -286,5 +298,76 @@ class _ListaPontosTuristicos extends State<ListaPontosTuristicos> {
        _popularDados();
       }
     });
+  }
+
+  void _obterLocalizacaoAtual() async{
+    bool servicoHabilitado = await _servicoHabilitado();
+    if(!servicoHabilitado){
+      return;
+    }
+    bool permissoesPermitidas = await _verificaPermissoes();
+    if(!permissoesPermitidas){
+      return;
+    }
+    Position posicao = await Geolocator.getCurrentPosition();
+    _localizacaoAtual = posicao;
+
+  }
+
+  Future<bool> _servicoHabilitado() async{
+    bool servicoHabilitado = await Geolocator.isLocationServiceEnabled();
+    if(!servicoHabilitado){
+      await _mostrarMensagemDialog(
+          'Para utilizar este recurso, é necessário acessar as configurações '
+              'do dispositivo e permitir a utilização do serviço de localização.'
+      );
+      Geolocator.openAppSettings();
+      return false;
+    }
+    return true;
+  }
+
+  Future<bool> _verificaPermissoes() async{
+    LocationPermission permissao = await Geolocator.checkPermission();
+    if(permissao == LocationPermission.denied){
+      permissao = await Geolocator.requestPermission();
+      if(permissao == LocationPermission.denied){
+        _mostrarMensagem('Não foi possível utilizar o recurso por falta de permissão');
+        return false;
+      }
+    }
+    if(permissao == LocationPermission.deniedForever){
+      await _mostrarMensagemDialog(
+          'Para utilizar este recurso, é necessário acessar as configurações '
+              'do dispositivo e permitir a utilização do serviço de localização.'
+      );
+      Geolocator.openAppSettings();
+      return false;
+    }
+    return true;
+  }
+
+  void _mostrarMensagem(String mensagem){
+    ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            content: Text(mensagem)
+        )
+    );
+  }
+
+  Future<void> _mostrarMensagemDialog(String mensagem) async{
+    await showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+          title: Text('Atenção'),
+          content: Text(mensagem),
+          actions: [
+            TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text('OK')
+            )
+          ],
+        )
+    );
   }
 }

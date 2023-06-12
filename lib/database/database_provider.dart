@@ -2,7 +2,7 @@ import 'package:pontos_turisticos/model/pontosTuristicos.dart';
 import 'package:sqflite/sqflite.dart';
 
 class DataBaseProvider{
-  static const _dbName = 'pontos_turisticos.db';
+  static const _dbName = 'pontos_turisticosv1.db';
   static const _dbVersion = 1;
 
   DataBaseProvider._init();

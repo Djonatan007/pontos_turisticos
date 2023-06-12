@@ -114,12 +114,12 @@ class _DetalhePontoState extends State<DetalhePonto> {
                     ),
                     label: const Text('Calcular distância'),
                     onPressed: _calcularDistancia,
-                  )
+                  ),
                 ],
               ),
               Text("Distância: ${_localizacaoAtual == null ? "Calcule a distância" : _distancia}")
             ],
-          )
+          ),
         ],
       ),
     );
