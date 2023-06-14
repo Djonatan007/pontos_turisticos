@@ -73,12 +73,6 @@ class _ListaPontosTuristicos extends State<ListaPontosTuristicos> {
             label: Text('Novo Ponto'),
             icon: Icon(Icons.add)
           ),
-          SizedBox(height: 16.0),
-          FloatingActionButton.extended(
-            onPressed: () => {},
-            label: Text('Buscar Cep'),
-            icon: Icon(Icons.search)
-          ),
         ],
       ),
     );
@@ -93,39 +87,55 @@ class _ListaPontosTuristicos extends State<ListaPontosTuristicos> {
             title: Text(pontoTuristico == null ? 'Novo Ponto' : 'Alterar o Ponto: ${pontoTuristico.id}'),
             content: FormNewPoint(key: key, pontoTuristico: pontoTuristico),
             actions: [
-                TextButton(
-                    onPressed: _obterLocalizacaoAtual,
-                    child: Text('Obter localização')
+              Align(
+                alignment: Alignment.center,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    TextButton(
+                        onPressed: _obterLocalizacaoAtual,
+                        child: Text('Obter localização')
+                    ),
+                  ],
                 ),
-              TextButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  child: readOnly == true ? Text('Voltar') : Text('Cancelar')
               ),
-              if (readOnly == null || readOnly == false)
-                TextButton(
-                    onPressed: () {
-                      if (key.currentState != null && key.currentState!.dadosValidados()) {
-                        Navigator.of(context).pop();
+              Align(
+                alignment: Alignment.center,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    TextButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        child: readOnly == true ? Text('Voltar') : Text('Cancelar')
+                    ),
+                    Padding(padding: EdgeInsets.all(50)),
+                    if (readOnly == null || readOnly == false)
+                      TextButton(
+                          onPressed: () {
+                            if (key.currentState != null && key.currentState!.dadosValidados()) {
+                              Navigator.of(context).pop();
 
-                        final novoPonto = key.currentState!.newPoint;
-                        novoPonto.longitude = _localizacaoAtual!.longitude.toString();
-                        novoPonto.latitude =  _localizacaoAtual!.latitude.toString();
+                              final novoPonto = key.currentState!.newPoint;
+                              novoPonto.longitude = _localizacaoAtual!.longitude.toString();
+                              novoPonto.latitude =  _localizacaoAtual!.latitude.toString();
 
-                        _dao.salvar(novoPonto).then((sucess){
-                          if (sucess){
-                            _popularDados();
-                          }
-                        });
-                      }
-                    },
-                    child: Text('Salvar')
+                              _dao.salvar(novoPonto).then((sucess){
+                                if (sucess){
+                                  _popularDados();
+                                }
+                              });
+                            }
+                          },
+                          child: Text('Salvar')
+                      ),
+                  ],
                 ),
+              ),
             ],
           );
         }
     );
   }
-
 
   void _excluirTarefa(PontoTuristico ponto) {
     showDialog(

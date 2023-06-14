@@ -2,7 +2,7 @@ import 'package:pontos_turisticos/model/pontosTuristicos.dart';
 import 'package:sqflite/sqflite.dart';
 
 class DataBaseProvider{
-  static const _dbName = 'pontos_turisticosv1.db';
+  static const _dbName = 'pontos_turisticosv2.db';
   static const _dbVersion = 1;
 
   DataBaseProvider._init();
@@ -39,7 +39,8 @@ class DataBaseProvider{
     ${PontoTuristico.CAMPO_DATA_INCLUSAO} TEXT,
     ${PontoTuristico.CAMPO_FINALIZADO} INTEGER NOT NULL DEFAULT 0,
     ${PontoTuristico.CAMPO_LATITUDE} TEXT,
-    ${PontoTuristico.CAMPO_LONGITUDE} TEXT
+    ${PontoTuristico.CAMPO_LONGITUDE} TEXT,
+    ${PontoTuristico.CAMPO_CEP} TEXT NOT NULL
     )
     '''
     );

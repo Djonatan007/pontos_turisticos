@@ -60,7 +60,8 @@ class PontoTuristicoDao{
           PontoTuristico.CAMPO_DATA_INCLUSAO,
           PontoTuristico.CAMPO_FINALIZADO,
           PontoTuristico.CAMPO_LATITUDE,
-          PontoTuristico.CAMPO_LONGITUDE
+          PontoTuristico.CAMPO_LONGITUDE,
+          PontoTuristico.CAMPO_CEP
         ],
       where: where,
       orderBy: orderBy

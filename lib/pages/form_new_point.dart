@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../dao/pontoTuristico_dao.dart';
 import '../model/pontosTuristicos.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 class FormNewPoint extends StatefulWidget {
   final PontoTuristico? pontoTuristico;
@@ -20,7 +21,9 @@ class FormNewPointState extends State<FormNewPoint> {
   final descricaoController = TextEditingController();
   final inclusaoController = TextEditingController();
   final diferenciaisController = TextEditingController();
+  final cepController = TextEditingController();
   final _dateFormat = DateFormat('dd/MM/yyyy');
+  MaskTextInputFormatter cepFormatter = MaskTextInputFormatter(mask: '#####-###');
 
   @override
   void initState() {
@@ -31,6 +34,7 @@ class FormNewPointState extends State<FormNewPoint> {
       descricaoController.text = widget.pontoTuristico!.descricao;
       inclusaoController.text = widget.pontoTuristico!.dataInclusaoFormatado;
       diferenciaisController.text = widget.pontoTuristico!.diferencial!;
+      cepController.text = widget.pontoTuristico!.cep;
     } else {
       inclusaoController.text = _dateFormat.format(DateTime.now());
     }
@@ -75,6 +79,18 @@ class FormNewPointState extends State<FormNewPoint> {
                   return null;
                 },
               ),
+              TextFormField(
+                inputFormatters: [cepFormatter],
+                controller: cepController,
+                maxLength: 9,
+                decoration: const InputDecoration(labelText: 'CEP'),
+                validator: (String? valor) {
+                  if (valor == null || valor.isEmpty) {
+                    return 'Informe o CEP';
+                  }
+                  return null;
+                },
+              ),
               Divider(color: Colors.white,),
               Row(
                 children: [
@@ -98,6 +114,7 @@ class FormNewPointState extends State<FormNewPoint> {
         inclusao: _dateFormat.parse(inclusaoController.text),
         diferencial: diferenciaisController.text,
         latitude: '',
-        longitude: ''
+        longitude: '',
+        cep: cepController.text
   );
 }
